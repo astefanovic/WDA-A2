@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import { withStyles } from 'material-ui/styles';
+import styles from './AppStyle'
+import PropTypes from 'prop-types';
+import { apiurl } from './services/constants';
 import firebase from 'firebase';
 import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import Grid from 'material-ui/Grid';
 import SideBar from './components/Navigation/SideBar';
 import LoginButton from './scenes/Login/LoginButton';
 
@@ -13,6 +19,10 @@ class App extends Component {
             drawerOpen: false,
             //Accessed by the popover to toggle extension
             popoverOpen: false,
+            //The current user object as provided by auth
+            user: null,
+            //The current user's type
+            type: null,
         };
     }
     
@@ -36,45 +46,82 @@ class App extends Component {
     //Function handles clicking of a login type
     handleAuthClick = (type) => {
         //First closes popover
-        this.setState({popoverOpen: false});
+        this.setState({popoverOpen: false,
+                      type: type});
         //Sets the provider and pops up login dialog
         const provider = new firebase.auth.GoogleAuthProvider();
+        var formData;
+        
         firebase.auth().signInWithPopup(provider)
-            .then((success) => { })
-            .then(() => { });
+            .then((success) => {this.handleCredentials(success.user)})
+            .then(() => {
+                //Creates a FormData object to be given to the API,
+                //as it doesn't accept json
+                formData = new FormData();
+                formData.append('uid', this.state.user.uid);
+                formData.append('name', this.state.user.displayName);
+                formData.append('email', this.state.user.email);
+                formData.append('type', this.state.type);
+            })
+            .then(() => {
+            fetch(apiurl + '/staff', {
+                method:'POST',
+                body: formData,
+            })
+            .then((response) => {console.log(response.json())})
+            .catch((error) => {console.log(error)});
+        });
     }
     
+    //Adds the user details from auth to the state
     handleCredentials = (params) => {
         console.log(params);
+        console.log(this.state.type);
+        this.setState({user: params});
+    }
+    
+    //Removes the user and type from the state
+    //and signs out in auth
+    handleSignoutClick = () => {
+        const vm = this;
+        vm.setState({
+            user: null,
+            type: null
+        });
+        firebase.auth().signOut();
     }
     
     //Function sets the popover to closed
-    handleClosePopover = () => this.setState({popoverOpen: false});
-    
-    //Function alternates true/false to toggle the drawer
-    handleDrawerToggle = () => this.setState({drawerOpen: !this.state.drawerOpen});
-
-    //Function sets the drawer opening based on the boolean given
-    handleSetDrawer = (open) => this.setState({drawerOpen: open});
-
-    //Function sets the drawer to closed
-    handleCloseDrawer = () => this.setState({drawerOpen: false});
-    
+    handleClosePopover = () => this.setState({popoverOpen: false});    
 
 render() {
+    const classes = this.props.classes;
     return (
-        <div>
+        <div className={classes.relative}>
         <AppBar 
-            title="RMIT Ticketing System" 
-            onLeftIconButtonTouchTap={this.handleDrawerToggle}
-            iconElementRight={<LoginButton open={this.state.popoverOpen}
+            title="RMIT Ticketing System"
+            className={classes.appbar} >
+                <Toolbar>
+                   <Grid container justify="space-between" align="center"  >
+                        <Grid item>
+                           RMIT Ticketing System
+                        </Grid>
+                        <Grid item>
+                            <LoginButton className={classes.right} 
+                                open={this.state.popoverOpen}
+                                user={this.state.user}
                                 handleClick={this.handleLoginClick}
                                 handleClose={this.handleClosePopover}
                                 handleAuthClick={this.handleAuthClick}
-                                anchorEl={this.state.popoverAnchor} />}
-        />
+                                handleSignoutClick={this.handleSignoutClick}
+                                anchorEl={this.state.popoverAnchor} />
+                        </Grid>
+                    </Grid>
+                </Toolbar>
+            </AppBar>
         {/* Sidebar for navigation, drawer opening methods passed to it */}
-        <SideBar open={this.state.drawerOpen}
+        <SideBar 
+        open={this.state.drawerOpen}
         handleSet={this.handleSetDrawer}
         handleClose={this.handleCloseDrawer} />
         </div>
@@ -82,4 +129,9 @@ render() {
 }
 }
 
-export default App;
+//Adds the classes for styling
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(App);
