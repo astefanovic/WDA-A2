@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import styles from './SideBarStyle'
@@ -24,8 +25,8 @@ class SideBar extends Component {
             //onRequestChange={(open) => {this.props.handleSet(open)}}
             >
             <List>
-                <ListItem button>
-                    <ListItemText primary="Tickets"/>
+                <ListItem button onClick={this.props.handleSnackbarOpen}>
+                    <Link to="/tickets"><ListItemText primary="Tickets"/></Link> 
                 </ListItem>
                 <Divider />
                 <ListItem button component="a" href="https://github.com/astefanovic/wda-a2">

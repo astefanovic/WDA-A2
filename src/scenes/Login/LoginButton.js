@@ -18,9 +18,6 @@ class LoginButton extends Component {
                         <Menu
                             open={this.props.open}
                             anchorEl={this.props.anchorEl}
-                            //For positioning the menu against the button
-                            //anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                            //targetOrigin={{horizontal: 'left', vertical: 'top'}}
                             //Handles close requests, such as clicking outside the menu
                             onRequestClose={this.props.handleClose}
                             animation={PopoverAnimationVertical} >

@@ -9,6 +9,10 @@ import Toolbar from 'material-ui/Toolbar';
 import Grid from 'material-ui/Grid';
 import SideBar from './components/Navigation/SideBar';
 import LoginButton from './scenes/Login/LoginButton';
+import Tickets from './scenes/Tickets/Tickets';
+import Typography from 'material-ui/Typography';
+import Snackbar from 'material-ui/Snackbar';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 class App extends Component {
 
@@ -19,6 +23,8 @@ class App extends Component {
             drawerOpen: false,
             //Accessed by the popover to toggle extension
             popoverOpen: false,
+            //Accessed by the snackbar alert to toggle extension
+            snackbarOpen: false,
             //The current user object as provided by auth
             user: null,
             //The current user's type
@@ -26,6 +32,7 @@ class App extends Component {
         };
     }
     
+    //TODO: Fix on auto login, type not set
     componentWillMount () {
         firebase.auth().onAuthStateChanged(this.handleCredentials);
     }
@@ -91,6 +98,12 @@ class App extends Component {
         firebase.auth().signOut();
     }
     
+    //Function that alerts the user to login by opening snackbar
+    handleSnackbarOpen = () => {if(!this.state.user) this.setState({snackbarOpen: true})};
+
+    //Functin that closes the snackbar
+    handleCloseSnackbar = () => {this.setState({snackbarOpen: false})};
+    
     //Function sets the popover to closed
     handleClosePopover = () => this.setState({popoverOpen: false});    
 
@@ -104,7 +117,9 @@ render() {
                 <Toolbar>
                    <Grid container justify="space-between" align="center"  >
                         <Grid item>
-                           RMIT Ticketing System
+                           <Typography type="title" className={classes.title}>
+                               RMIT Ticketing System    
+                           </Typography>
                         </Grid>
                         <Grid item>
                             <LoginButton className={classes.right} 
@@ -123,7 +138,33 @@ render() {
         <SideBar 
         open={this.state.drawerOpen}
         handleSet={this.handleSetDrawer}
-        handleClose={this.handleCloseDrawer} />
+        handleClose={this.handleCloseDrawer} 
+        handleSnackbarOpen={this.handleSnackbarOpen}/>
+        
+        {/*Routes to page for managing tickets and home splash page */}
+        <Switch>
+          <Route path="/tickets" render={() => (
+                    this.state.user ? (
+                        <Tickets className={classes.bodyOffset}/>
+                    ) : (
+                        <Redirect to="/" />
+                    ))} />
+          <Route exact path="/" component={() => <div></div>} />
+          {/* Page not found route */}
+          <Route render={() => {
+                    <Typography type="display3" align="center" className={classes.bodyOffset}>
+                        Page Not Found
+                    </Typography>}} />
+        </Switch>
+        
+        {/* Alert when the user doesnt log in and gets redirected */}
+        <Snackbar
+            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+            open={this.state.snackbarOpen}
+            autoHideDuration={5000}
+            onRequestClose={this.handleCloseSnackbar}
+            message={"Login above to view tickets"}
+        />
         </div>
     );
 }
