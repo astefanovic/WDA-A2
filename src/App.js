@@ -35,6 +35,8 @@ class App extends Component {
     //TODO: Fix on auto login, type not set
     componentWillMount () {
         firebase.auth().onAuthStateChanged(this.handleCredentials);
+        //HOTFIX: firebase logs out on reload
+        window.addEventListener('beforeunload', this.handleSignoutClick);
     }
     
 
