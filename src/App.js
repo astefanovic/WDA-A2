@@ -54,7 +54,7 @@ class App extends Component {
     
     //Function handles clicking of a login type
     handleAuthClick = (type) => {
-        //First closes popover
+        //First closes popover and sets type
         this.setState({popoverOpen: false,
                       type: type});
         //Sets the provider and pops up login dialog
@@ -147,7 +147,9 @@ render() {
         <Switch>
           <Route path="/tickets" render={() => (
                     this.state.user ? (
-                        <Tickets className={classes.bodyOffset}/>
+                        <Tickets className={classes.bodyOffset}
+                            user={this.state.user}
+                            type={this.state.type}/>
                     ) : (
                         <Redirect to="/" />
                     ))} />

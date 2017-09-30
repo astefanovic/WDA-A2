@@ -4,7 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import styles from './SideBarStyle'
 import Drawer from 'material-ui/Drawer';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemText } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 
 class SideBar extends Component {
