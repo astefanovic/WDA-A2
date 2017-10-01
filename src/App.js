@@ -39,6 +39,10 @@ class App extends Component {
         window.addEventListener('beforeunload', this.handleSignoutClick);
     }
     
+    //HOTFIX: firebase logs out on reload
+    componentWillUnmount() {
+        this.handleSignoutClick();
+    }
 
     //Function opens the popover centered on the button
     handleLoginClick = (event) => {
