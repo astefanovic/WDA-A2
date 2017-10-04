@@ -159,10 +159,10 @@ render() {
                     ))} />
           <Route exact path="/" component={() => <div></div>} />
           {/* Page not found route */}
-          <Route render={() => {
+          <Route render={() => (
                     <Typography type="display3" align="center" className={classes.bodyOffset}>
                         Page Not Found
-                    </Typography>}} />
+                    </Typography>)} />
         </Switch>
         
         {/* Alert when the user doesnt log in and gets redirected */}

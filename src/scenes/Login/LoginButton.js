@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
-import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import Menu, { MenuItem } from 'material-ui/Menu';
 
 class LoginButton extends Component {
@@ -19,8 +18,7 @@ class LoginButton extends Component {
                             open={this.props.open}
                             anchorEl={this.props.anchorEl}
                             //Handles close requests, such as clicking outside the menu
-                            onRequestClose={this.props.handleClose}
-                            animation={PopoverAnimationVertical} >
+                            onRequestClose={this.props.handleClose} >
                                 <MenuItem onClick={() => this.props.handleAuthClick('Technician')}>Technician</MenuItem>
                                 <MenuItem onClick={() => this.props.handleAuthClick('Helpdesk')}>Helpdesk</MenuItem>
                         </Menu>

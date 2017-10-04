@@ -2,15 +2,9 @@ import React, { Component } from 'react';
 import { apiurl } from '../../../services/constants';
 import { withStyles } from 'material-ui/styles';
 import styles from './TechnicianTicketsStyle'
+import TicketCard from './TicketCard';
 import PropTypes from 'prop-types';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
-import Chip from 'material-ui/Chip';
 import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import DoneIcon from 'material-ui-icons/Done';
-import Typography from 'material-ui/Typography';
-
 class TechnicianTickets extends Component {
     constructor(props) {
         super(props);
@@ -73,7 +67,8 @@ class TechnicianTickets extends Component {
         this.setState({status: status, priority: ticket});
     };
 
-    //Sets the ticket to completed
+    //Sets the ticket to completed through the API
+    //and then reloads the tickets
     handleCompletedClick = (ticket) => {
         console.log(ticket);
         var formData = new FormData();
@@ -85,6 +80,7 @@ class TechnicianTickets extends Component {
         formData.append('priority', ticket.priority);
         formData.append('user_id', ticket.user_id);
         formData.append('staff_id', ticket.staff_id);
+        //Sets the completed to true (1)
         formData.append('completed', 1);
         
 
@@ -96,17 +92,61 @@ class TechnicianTickets extends Component {
         .then((response) => console.log(response.json()))
         .catch((error) => {console.log(error)});
         
-        setTimeout(this.getTickets, 3000);
+        //Delay to wait for API
+        setTimeout(this.getTickets, 1000);
     }
-
-    //Opens the clicked list
-    /*
-    handleStatusListClick = (event, index) => {
-        var open = this.state.statusOpen;
-        open[i] = true;
-        var anchor = this.state.status
-        this.setState({statusOpen: open, })
-    } */
+    
+    //Escalates the priority by one
+    handleEscalateClick = (ticket) => {
+        var formData = new FormData();
+        formData.append('id', ticket.id);
+        formData.append('subject', ticket.subject);
+        formData.append('desc', ticket.desc);
+        formData.append('status', ticket.status);
+        formData.append('escalation', ++ticket.escalation);
+        formData.append('priority', ticket.priority);
+        formData.append('user_id', ticket.user_id);
+        //Unassigning the current staff member
+        formData.append('staff_id', "");
+        formData.append('completed', ticket.completed);
+        
+        //Posts the new ticket to the API
+        fetch(apiurl + '/tickets/update', {
+            method:'POST',
+            body:formData,
+        })
+        .then((response) => console.log(response.json()))
+        .catch((error) => {console.log(error)});
+        
+        //Delay to wait for API
+        setTimeout(this.getTickets, 1000);
+    }
+    
+    //Sets the status equal to option passed from click handler
+    handleStatusChange = (ticket, option) => {
+        var formData = new FormData();
+        formData.append('id', ticket.id);
+        formData.append('subject', ticket.subject);
+        formData.append('desc', ticket.desc);
+        //Status is updated based on the selected menu item
+        formData.append('status', option);
+        formData.append('escalation', ticket.escalation);
+        formData.append('priority', ticket.priority);
+        formData.append('user_id', ticket.user_id);
+        formData.append('staff_id', ticket.staff_id);
+        formData.append('completed', ticket.completed);
+        
+        //Posts the new ticket to the API
+        fetch(apiurl + '/tickets/update', {
+            method:'POST',
+            body:formData,
+        })
+        .then((response) => console.log(response.json()))
+        .catch((error) => {console.log(error)});
+        
+        //Delay to wait for API
+        setTimeout(this.getTickets, 1000);
+    }
 
     render() {
         const classes = this.props.classes;
@@ -116,40 +156,10 @@ class TechnicianTickets extends Component {
                 <Grid container justify="space-around">
                     {this.state.tickets.map((ticket, i) => (
                         <Grid key={i} item>
-                            <Card>
-                                <CardContent>
-                                    <Typography type="headline" component="h2">
-                                        {ticket.subject}
-                                    </Typography>
-                                    <Typography type="caption" gutterBottom>
-                                        {ticket.type}
-                                    </Typography>
-                                    <hr/>
-                                    <Typography type="body2" gutterBottom>
-                                        {ticket.desc}
-                                    </Typography>
-                                </CardContent>
-                                    <CardActions disableActionSpacing>
-                                           {/*
-                                            <Grid item xs="4">
-                                                <List>
-                                                    <ListItem button onClick={this.handleStatusListClick(event, i)}>
-                                                        <ListItemText primary={this.state.status[i]} />
-                                                    </ListItem>
-                                                </List>
-                                                <Menu anchorEl={this.state.statusAnchor[i]}
-                                                    open={this.state.statusOpen[i]}
-                                                    onRequestClose={this.handleRequestClose}>
-                                                    <MenuItem></MenuItem>
-                                                </Menu>
-                                                    
-                                            </Grid> */}
-                                                {ticket.completed === 0 ? (
-                                                    <IconButton color="primary" 
-                                                        onClick={event => this.handleCompletedClick(ticket)}><DoneIcon /></IconButton>
-                                                ) : null}    
-                                    </CardActions>
-                            </Card>
+                            <TicketCard ticket={ticket}
+                                handleCompletedClick={this.handleCompletedClick}
+                                handleEscalateClick={this.handleEscalateClick}
+                                handleStatusClick={this.handleStatusChange} />
                         </Grid>
                     ))}
                 </Grid>
