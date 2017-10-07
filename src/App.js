@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import styles from './AppStyle'
+import styles from './AppStyle';
 import PropTypes from 'prop-types';
 import { apiurl } from './services/constants';
 import firebase from 'firebase';
@@ -177,10 +177,9 @@ render() {
     );
 }
 }
-
 //Adds the classes for styling
 App.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(App);

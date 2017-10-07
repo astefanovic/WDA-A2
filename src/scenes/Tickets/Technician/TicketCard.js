@@ -6,6 +6,8 @@ import DoneIcon from 'material-ui-icons/Done';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
+import Collapse from 'material-ui/transitions/Collapse';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 
 //An array of options that the status can be, to be
 //used to map the dropdown menu options
@@ -26,8 +28,13 @@ class TicketCard extends Component {
             anchorEl: null,
             //Determines if the dropdown is extended or not
             open: false,
-        }
+	    //Determines if the comments section is extended
+	    expanded: false
+        };
     }
+
+    //Handles when the expansion is clicked, setting the state to expanded
+    handleExpandClick = () => { this.setState({expanded: !this.state.expanded});  };
     
     //Handles when the menu button is clicked, setting the menu to open
     handleClick = event => {this.setState({open: true, anchorEl: event.currentTarget});};
@@ -40,6 +47,11 @@ class TicketCard extends Component {
     handleStatusClick = (ticket, option) => {
         this.setState({open: false});
         this.props.handleStatusClick(ticket, option);
+    }
+
+    //Checks if a comment exists for the current ticket
+    checkCommentId = (current, index, array) => {
+	return this.props.ticket.id === current.ticket_id;
     }
 
     render() {
@@ -82,18 +94,47 @@ class TicketCard extends Component {
                         </Button>
                     ) : null}
                     
-                    {(this.props.ticket.completed === 0 && (this.props.ticket.status === "unresolved" || this.props.ticket.status === "resolved")) ? (
+                 {(this.props.ticket.completed === 0
+	         && (this.props.ticket.status === "unresolved" || this.props.ticket.status === "resolved")) ? (
                         <Tooltip title="Mark Complete" placement="bottom">
                             <IconButton color="primary" 
                                 onClick={event => this.props.handleCompletedClick(this.props.ticket)}>
                                 <DoneIcon />
                             </IconButton>
                         </Tooltip>
-                    ) : null}    
-                </CardActions>
+                 ) : null}
+	         {/* Icon for the expanding comments section */}
+	        <IconButton onClick={this.handleExpandClick} aria-expanded={this.state.expanded}>
+		    <ExpandMoreIcon />
+		</IconButton>
+		</CardActions>
+		<Collapse in={this.state.expanded} transitionDuration={"auto"} unmountOnExit>
+		<CardContent>
+		{/* Checks if a comment exists, if not message is inserted */}
+		{this.props.comments.every(this.checkCommentId) ? (
+		    this.props.comments.map((comment, i) => (
+		/* Checks if the current comment is for this ticket */
+		    this.props.ticket.id === comment.ticket_id ? (
+			<div key={i}>
+			  <Typography type="body1" key={i}>
+			    {comment.text}    
+			    
+			  </Typography>
+			  <Typography type="caption">
+			    {comment.email}
+			  </Typography>
+			</div>) : null
+		 ))): <Typography type="caption">No comments to show</Typography>}
+	        </CardContent>
+		</Collapse>
             </Card>
-        )
+        );
     }
 }
 
 export default TicketCard;
+	{/*!this.props.comments ? (
+		    <CardContent><Typography paragraph>No comments to show</Typography></CardContent>
+		) : (<Comments comments={this.props.comments}
+		     ticketid={this.props.ticket.id} />)*/}
+	

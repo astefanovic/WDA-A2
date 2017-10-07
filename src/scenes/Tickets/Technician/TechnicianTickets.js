@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { apiurl } from '../../../services/constants';
 import { withStyles } from 'material-ui/styles';
-import styles from './TechnicianTicketsStyle'
+import styles from './TechnicianTicketsStyle';
 import TicketCard from './TicketCard';
 import PropTypes from 'prop-types';
 import Grid from 'material-ui/Grid';
@@ -11,18 +11,22 @@ class TechnicianTickets extends Component {
         this.state = {
             //The array to store all tickets for the current user
             tickets: [],
+	    //An array storing all the comments in the database
+	    comments: [],
             //An array to hold the status of each ticket
             status: [],
             //An array to hold the priority of each ticket
             priority: [],
             //An array to hold the expansion of each ticket
-            expansion: [],
-        }
+            expansion: []
+        };
     }
 
     componentWillMount() {
         //First fetches the tickets to display
         this.getTickets();
+	//Also fetches all the comments
+	this.getComments();
     }
 
     //Fetches the tickets assigned to the current user
@@ -36,7 +40,7 @@ class TechnicianTickets extends Component {
         //Posts the uid to the API
         fetch(apiurl + '/staff/tickets', {
             method:'POST',
-            body:formData,
+            body:formData
         })        
         .then((response) => response.json())
         .then((responseJson) => {
@@ -54,6 +58,24 @@ class TechnicianTickets extends Component {
         
         //Setting the state of each ticket to be used in the onClick functions
         this.state.tickets.map((ticket, index) => this.setTicketStates(ticket,index));
+    }
+
+    //Fetches all comments to pass to comment components, abstracted to this to reduce
+    //the number of fetches made
+    getComments = () => {
+	//Simple get to populate array
+	fetch(apiurl + '/comments')
+	    .then((response) => response.json())
+	    .then((response) => {
+		console.log(response);
+		const commentsArray=[];
+		for(const i in response) {
+		    commentsArray.push(response[i]);
+		}
+		return commentsArray;
+	    })
+	    .then((comments) => {this.setState({comments: comments}); })
+	    .catch((error) => { console.log(error); });
     }
     
     //Sets the provided tickets status and priority in the state
@@ -147,7 +169,6 @@ class TechnicianTickets extends Component {
         //Delay to wait for API
         setTimeout(this.getTickets, 1000);
     }
-
     render() {
         const classes = this.props.classes;
         //this.state.tickets.map((ticket, i) => (console.log(ticket.id)));
@@ -156,7 +177,8 @@ class TechnicianTickets extends Component {
                 <Grid container justify="space-around">
                     {this.state.tickets.map((ticket, i) => (
                         <Grid key={i} item>
-                            <TicketCard ticket={ticket}
+                          <TicketCard ticket={ticket}
+				      comments={this.state.comments}
                                 handleCompletedClick={this.handleCompletedClick}
                                 handleEscalateClick={this.handleEscalateClick}
                                 handleStatusClick={this.handleStatusChange} />
@@ -170,7 +192,7 @@ class TechnicianTickets extends Component {
 
 //Adds the classes for styling
 TechnicianTickets.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(TechnicianTickets);
