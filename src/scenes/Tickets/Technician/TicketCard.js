@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import CommentDialog from './CommentDialog';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
@@ -8,6 +9,7 @@ import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import Divider from 'material-ui/Divider';
 
 //An array of options that the status can be, to be
 //used to map the dropdown menu options
@@ -51,6 +53,8 @@ class TicketCard extends Component {
 
     //Checks if a comment exists for the current ticket
     checkCommentId = (current, index, array) => {
+	console.log(this.props.ticket.id);
+	console.log(current.ticket_id);
 	return this.props.ticket.id === current.ticket_id;
     }
 
@@ -108,23 +112,30 @@ class TicketCard extends Component {
 		    <ExpandMoreIcon />
 		</IconButton>
 		</CardActions>
+		
 		<Collapse in={this.state.expanded} transitionDuration={"auto"} unmountOnExit>
 		<CardContent>
 		{/* Checks if a comment exists, if not message is inserted */}
-		{this.props.comments.every(this.checkCommentId) ? (
+		{this.props.comments.some(this.checkCommentId) ? (
 		    this.props.comments.map((comment, i) => (
 		/* Checks if the current comment is for this ticket */
 		    this.props.ticket.id === comment.ticket_id ? (
 			<div key={i}>
+			  <br/>
 			  <Typography type="body1" key={i}>
 			    {comment.text}    
-			    
 			  </Typography>
 			  <Typography type="caption">
 			    {comment.email}
 			  </Typography>
+			  <br/>
+			  <Divider />
 			</div>) : null
-		 ))): <Typography type="caption">No comments to show</Typography>}
+		    ))): <div><Typography type="caption">No comments to show</Typography><br/></div>}
+	        {/* Component to run add comment dialog */}
+		<CommentDialog ticket={this.props.ticket}
+	    staffid={this.props.ticket.staff_id}
+	    getComments={this.props.getComments}/>
 	        </CardContent>
 		</Collapse>
             </Card>
@@ -137,4 +148,3 @@ export default TicketCard;
 		    <CardContent><Typography paragraph>No comments to show</Typography></CardContent>
 		) : (<Comments comments={this.props.comments}
 		     ticketid={this.props.ticket.id} />)*/}
-	

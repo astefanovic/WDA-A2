@@ -55,9 +55,6 @@ class TechnicianTickets extends Component {
         })
         .then((tickets) => {this.setState({tickets: tickets});})
         .catch((error) => {console.log(error)});
-        
-        //Setting the state of each ticket to be used in the onClick functions
-        this.state.tickets.map((ticket, index) => this.setTicketStates(ticket,index));
     }
 
     //Fetches all comments to pass to comment components, abstracted to this to reduce
@@ -77,17 +74,6 @@ class TechnicianTickets extends Component {
 	    .then((comments) => {this.setState({comments: comments}); })
 	    .catch((error) => { console.log(error); });
     }
-    
-    //Sets the provided tickets status and priority in the state
-    setTicketStates = (ticket, index) => {
-        var status = this.state.status;
-        status[index] = ticket.status;
-        
-        var priority = this.state.priority;
-        priority[index] = ticket.priority;
-        
-        this.setState({status: status, priority: ticket});
-    };
 
     //Sets the ticket to completed through the API
     //and then reloads the tickets
@@ -179,9 +165,10 @@ class TechnicianTickets extends Component {
                         <Grid key={i} item>
                           <TicketCard ticket={ticket}
 				      comments={this.state.comments}
-                                handleCompletedClick={this.handleCompletedClick}
-                                handleEscalateClick={this.handleEscalateClick}
-                                handleStatusClick={this.handleStatusChange} />
+                                      handleCompletedClick={this.handleCompletedClick}
+                                      handleEscalateClick={this.handleEscalateClick}
+                                      handleStatusClick={this.handleStatusChange}
+				      getComments={this.getComments}/>
                         </Grid>
                     ))}
                 </Grid>
