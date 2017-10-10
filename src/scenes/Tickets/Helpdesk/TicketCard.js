@@ -85,7 +85,8 @@ class TicketCard extends Component {
         this.props.technicians.forEach((technician) => {
             if (technician.id === staff_id) {
                 this.setState({techname: technician.name});
-            }
+            } else
+                this.setState({techname: "NONE"});
         })
     };
 
