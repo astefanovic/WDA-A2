@@ -171,10 +171,10 @@ render() {
 					     </Typography>
 					     </div>} />
           {/* Page not found route */}
-          <Route render={() => {
+          <Route render={() => (
                     <Typography type="display3" align="center" className={classes.bodyOffset}>
                         Page Not Found
-                    </Typography>}} />
+                    </Typography>)} />
         </Switch>
         
         {/* Alert when the user doesnt log in and gets redirected */}
@@ -189,10 +189,9 @@ render() {
     );
 }
 }
-
 //Adds the classes for styling
 App.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(App);
