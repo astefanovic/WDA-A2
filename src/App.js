@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import styles from './AppStyle'
+import styles from './AppStyle';
 import PropTypes from 'prop-types';
 import { apiurl } from './services/constants';
 import firebase from 'firebase';
@@ -12,6 +12,7 @@ import LoginButton from './scenes/Login/LoginButton';
 import Tickets from './scenes/Tickets/Tickets';
 import Typography from 'material-ui/Typography';
 import Snackbar from 'material-ui/Snackbar';
+import Divider from 'material-ui/Divider';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 
@@ -159,7 +160,16 @@ render() {
                     ) : (
                         <Redirect to="/" />
                     ))} />
-            <Route exact path="/" component={() => <div className={classes.backgroundImage}></div>} />
+            <Route exact path="/" component={() =>
+					     <div className={classes.backgroundImage}>
+					     <img src="RMITUniversityLogo.png" className={classes.icon} />
+					     <Typography type="display3" align="center" className={classes.whiteColor}>
+					     RMIT Ticket Administration
+					     </Typography>
+					     <Typography type="headline" align="center" className={classes.italics}>
+					     Ticket management for technicians and helpdesk staff
+					     </Typography>
+					     </div>} />
           {/* Page not found route */}
           <Route render={() => {
                     <Typography type="display3" align="center" className={classes.bodyOffset}>
