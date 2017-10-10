@@ -6,11 +6,7 @@ import Button from 'material-ui/Button';
 import Dialog, {DialogTitle, DialogActions} from 'material-ui/Dialog';
 import { Editor } from 'react-draft-wysiwyg';
 import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
-//Styles for the component
-const styles = theme => ({
-    padded: { padding: 15 }
-});
+import styles from './CommentDialogStyle';
 
 class CommentDialog extends Component {
     constructor (props) {
@@ -58,12 +54,14 @@ class CommentDialog extends Component {
     //Loops over the given contentState and appends all text together for storage
     getCommentText = (contentState) => {
 	let allText = "";
+	if(contentState.blocks == undefined) return ""; 
 	contentState.blocks.forEach((block) => {
 	    allText += " " + block.text;
 	});
 	return allText;
     }
     
+
     render() {
 	const classes = this.props.classes;
 	const { contentState } = this.state.contentState;
@@ -71,11 +69,12 @@ class CommentDialog extends Component {
 	    <div>
 	      <br/>
 	      <Button onClick={this.handleAddComment}>Add Comment</Button>
-	      <Dialog className= {classes.padded}
-		      open={this.state.open}
+	      <Dialog open={this.state.open}
 		      onRequestClose={this.handleRequestClose}>
 		<DialogTitle>New Comment</DialogTitle>
-		<Editor onContentStateChange={this.onContentStateChange}/>
+		<div className={classes.dialog}>
+		  <Editor onContentStateChange={this.onContentStateChange}/>
+		</div>
 		<Button onClick={() => this.handleSubmit(contentState)} color="primary">Submit</Button>
 	      </Dialog>
 	    </div>
@@ -84,6 +83,7 @@ class CommentDialog extends Component {
     }
 }
 
+//Addsthe classes for styling
 CommentDialog.propTypes = {
   classes: PropTypes.object.isRequired
 };

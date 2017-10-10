@@ -155,6 +155,7 @@ class TechnicianTickets extends Component {
         //Delay to wait for API
         setTimeout(this.getTickets, 1000);
     }
+    
     render() {
         const classes = this.props.classes;
         //this.state.tickets.map((ticket, i) => (console.log(ticket.id)));
