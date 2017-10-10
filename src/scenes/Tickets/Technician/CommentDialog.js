@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
+import { withStyles } from 'material-ui/styles';
+import PropTypes from 'prop-types';
 import { apiurl } from '../../../services/constants';
 import Button from 'material-ui/Button';
 import Dialog, {DialogTitle, DialogActions} from 'material-ui/Dialog';
 import { Editor } from 'react-draft-wysiwyg';
 import '../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
+//Styles for the component
+const styles = theme => ({
+    padded: { padding: 15 }
+});
 
 class CommentDialog extends Component {
     constructor (props) {
@@ -23,14 +30,14 @@ class CommentDialog extends Component {
     handleRequestClose = () => {this.setState({open: false});}
 
     //Handle when the user types into the Editor
-    onContentStateChange = (contentState) => {console.log(contentState); this.setState({contentState});}
+    onContentStateChange = (contentState) => {this.setState({contentState});}
 
     //Handle when a user submits the comment
     handleSubmit = (state) => {
-	console.log(JSON.stringify(this.state.contentState, null, 4));
+	const text = this.getCommentText(this.state.contentState);
         var formData = new FormData();
         formData.append('ticket_id', this.props.ticket.id);
-        formData.append('text', this.state.contentState.blocks[0].text);
+	formData.append('text', text);
 	formData.append('staff_id', this.props.staffid);
 	formData.append('user_id', "");
         //Posts the uid to the API
@@ -47,14 +54,26 @@ class CommentDialog extends Component {
         setTimeout(this.props.getComments, 1000);
 
     }
+
+    //Loops over the given contentState and appends all text together for storage
+    getCommentText = (contentState) => {
+	let allText = "";
+	contentState.blocks.forEach((block) => {
+	    allText += " " + block.text;
+	});
+	return allText;
+    }
     
     render() {
+	const classes = this.props.classes;
 	const { contentState } = this.state.contentState;
 	return (
 	    <div>
 	      <br/>
 	      <Button onClick={this.handleAddComment}>Add Comment</Button>
-	      <Dialog open={this.state.open} onRequestClose={this.handleRequestClose}>
+	      <Dialog className= {classes.padded}
+		      open={this.state.open}
+		      onRequestClose={this.handleRequestClose}>
 		<DialogTitle>New Comment</DialogTitle>
 		<Editor onContentStateChange={this.onContentStateChange}/>
 		<Button onClick={() => this.handleSubmit(contentState)} color="primary">Submit</Button>
@@ -65,4 +84,8 @@ class CommentDialog extends Component {
     }
 }
 
-export default CommentDialog;
+CommentDialog.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(CommentDialog);

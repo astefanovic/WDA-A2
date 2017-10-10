@@ -10,6 +10,7 @@ import Typography from 'material-ui/Typography';
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Divider from 'material-ui/Divider';
+import Chip from 'material-ui/Chip';
 
 //An array of options that the status can be, to be
 //used to map the dropdown menu options
@@ -74,24 +75,27 @@ class TicketCard extends Component {
                     </Typography>
                 </CardContent>
                 
-                <CardActions disableActionSpacing>
+                <CardActions>
                     {/* Button controls the changing of status via a dropdown menu */}
-                    <Button onClick={this.handleClick}>{this.props.ticket.status}</Button>
-                    <Menu anchorEl={this.state.anchorEl}
-                        open={this.state.open}
-                        onRequestClose={this.handleRequestClose} >
-                        {options.map((option, i) => (
-                            <MenuItem key={i}
-                                selected={i === this.props.ticket.status}
-                                onClick={event => 
-                                    this.handleStatusClick(this.props.ticket, option)} >
+                    {this.props.ticket.completed === 0 ? (<Button onClick={this.handleClick}>
+		      {this.props.ticket.status}
+		    </Button>) : (<Chip label="Completed" />) }
+		    
+			<Menu anchorEl={this.state.anchorEl}
+                              open={this.state.open}
+                              onRequestClose={this.handleRequestClose} >
+                          {options.map((option, i) => (
+                              <MenuItem key={i}
+					selected={i === this.props.ticket.status}
+					onClick={event => 
+                                this.handleStatusClick(this.props.ticket, option)} >
                                 {option.toUpperCase()}
-                            </MenuItem>
-                        ))}
-                    </Menu>
+                              </MenuItem>
+                          ))}
+			</Menu>
                     
                     {/* Button escalates the ticket and unassigns current staff member */}
-                    {this.props.ticket.escalation < 3 ? (
+            {(this.props.ticket.escalation < 3 && this.props.ticket.completed === 0) ? (
                         <Button color="accent"
                             onClick={event=>this.props.handleEscalateClick(this.props.ticket)}>
                            Escalate
@@ -107,7 +111,7 @@ class TicketCard extends Component {
                             </IconButton>
                         </Tooltip>
                  ) : null}
-	         {/* Icon for the expanding comments section */}
+	    {/* Icon for the expanding comments section */}
 	        <IconButton onClick={this.handleExpandClick} aria-expanded={this.state.expanded}>
 		    <ExpandMoreIcon />
 		</IconButton>
@@ -118,21 +122,21 @@ class TicketCard extends Component {
 		{/* Checks if a comment exists, if not message is inserted */}
 		{this.props.comments.some(this.checkCommentId) ? (
 		    this.props.comments.map((comment, i) => (
-		/* Checks if the current comment is for this ticket */
-		    this.props.ticket.id === comment.ticket_id ? (
-			<div key={i}>
-			  <br/>
-			  <Typography type="body1" key={i}>
-			    {comment.text}    
-			  </Typography>
-			  <Typography type="caption">
-			    {comment.email}
-			  </Typography>
-			  <br/>
-			  <Divider />
-			</div>) : null
+			/* Checks if the current comment is for this ticket */
+			this.props.ticket.id === comment.ticket_id ? (
+			    <div key={i}>
+			      <br/>
+			      <Typography type="body1">
+				{comment.text}    
+			      </Typography>
+			      <Typography type="caption">
+				{comment.email}
+			      </Typography>
+			      <br/>
+			      <Divider />
+			    </div>) : null
 		    ))): <div><Typography type="caption">No comments to show</Typography><br/></div>}
-	        {/* Component to run add comment dialog */}
+	    {/* Component to run add comment dialog */}
 		<CommentDialog ticket={this.props.ticket}
 	    staffid={this.props.ticket.staff_id}
 	    getComments={this.props.getComments}/>
@@ -144,7 +148,3 @@ class TicketCard extends Component {
 }
 
 export default TicketCard;
-	{/*!this.props.comments ? (
-		    <CardContent><Typography paragraph>No comments to show</Typography></CardContent>
-		) : (<Comments comments={this.props.comments}
-		     ticketid={this.props.ticket.id} />)*/}
