@@ -82,12 +82,15 @@ class TicketCard extends Component {
     };
 
     findTechnicianName = (staff_id) => {
+	if(!this.props.technicians.some((technician) => {
+	    if (technician.id === staff_id) {return true;}
+	    else {return false;}
+	})) this.setState({techname: "NONE"});
+	
         this.props.technicians.forEach((technician) => {
             if (technician.id === staff_id) {
                 this.setState({techname: technician.name});
-            } else
-                this.setState({techname: "NONE"});
-        })
+            }});
     };
 
     componentWillMount() {
