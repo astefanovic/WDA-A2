@@ -14,6 +14,8 @@ import Typography from 'material-ui/Typography';
 import Snackbar from 'material-ui/Snackbar';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
+
+
 class App extends Component {
 
     constructor(props) {
@@ -157,7 +159,7 @@ render() {
                     ) : (
                         <Redirect to="/" />
                     ))} />
-          <Route exact path="/" component={() => <div></div>} />
+            <Route exact path="/" component={() => <div className={classes.backgroundImage}></div>} />
           {/* Page not found route */}
           <Route render={() => {
                     <Typography type="display3" align="center" className={classes.bodyOffset}>
@@ -171,7 +173,7 @@ render() {
             open={this.state.snackbarOpen}
             autoHideDuration={5000}
             onRequestClose={this.handleCloseSnackbar}
-            message={"Login above to view tickets"}
+            message={"Login above to view ticket"}
         />
         </div>
     );

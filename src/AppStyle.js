@@ -18,6 +18,13 @@ const styles = {
         marginLeft: 240,
         marginTop: 64,
     },
+    backgroundImage: {
+        backgroundImage: 'url("SwanstonLibraryLearningCentrelevel5.jpg")',
+        width: "100%",
+        height: "100vh",
+        backgroundSize: "cover",
+        backgroundPosition: "50% 50%",
+    },
 };
 
 export default styles;

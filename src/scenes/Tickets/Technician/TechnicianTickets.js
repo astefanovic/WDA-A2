@@ -16,12 +16,12 @@ class TechnicianTickets extends Component {
         super(props);
         this.state = {
             //The array to store all tickets for the current user
-            tickets: [],
-            //An array to hold the status of each ticket
+            ticket: [],
+            //An array to hold the status of each tickets
             status: [],
-            //An array to hold the priority of each ticket
+            //An array to hold the priority of each tickets
             priority: [],
-            //An array to hold the expansion of each ticket
+            //An array to hold the expansion of each tickets
             expansion: [],
         }
     }
@@ -58,7 +58,7 @@ class TechnicianTickets extends Component {
         .then((tickets) => {this.setState({tickets: tickets});})
         .catch((error) => {console.log(error)});
         
-        //Setting the state of each ticket to be used in the onClick functions
+        //Setting the state of each tickets to be used in the onClick functions
         this.state.tickets.map((ticket, index) => this.setTicketStates(ticket,index));
     }
     
@@ -73,7 +73,7 @@ class TechnicianTickets extends Component {
         this.setState({status: status, priority: ticket});
     };
 
-    //Sets the ticket to completed
+    //Sets the tickets to completed
     handleCompletedClick = (ticket) => {
         console.log(ticket);
         var formData = new FormData();
@@ -110,7 +110,7 @@ class TechnicianTickets extends Component {
 
     render() {
         const classes = this.props.classes;
-        //this.state.tickets.map((ticket, i) => (console.log(ticket.id)));
+        //this.state.tickets.map((tickets, i) => (console.log(tickets.id)));
         return (
             <div className={classes.bodyOffset}>
                 <Grid container justify="space-around">
