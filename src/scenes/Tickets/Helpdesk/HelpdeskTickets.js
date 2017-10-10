@@ -17,7 +17,7 @@ class HelpdeskTickets extends Component {
             comments: [],
             //Store all technicians
             technicians: [],
-
+            //Store ticket priorities
             priority: [],
         };
     }
@@ -31,6 +31,7 @@ class HelpdeskTickets extends Component {
         this.getTechnicians();
     }
 
+    //Get all Tickets through API
     getTickets = () => {
         fetch(apiurl + '/tickets')
             .then((response) => response.json())
@@ -50,6 +51,7 @@ class HelpdeskTickets extends Component {
             });
     };
 
+    //Get all Comments through API
     getComments = () => {
         fetch(apiurl + '/comments')
             .then((response) => response.json())
@@ -68,6 +70,7 @@ class HelpdeskTickets extends Component {
             });
     };
 
+    //Get all Technicians through API
     getTechnicians = () => {
         var formData = new FormData();
         formData.append('type', type);
@@ -92,25 +95,7 @@ class HelpdeskTickets extends Component {
             });
     };
 
-    /*getTechnicians = () => {
-        fetch(apiurl + '/staff')
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-                const techniciansArray = [];
-                for (const i in responseJson) {
-                    techniciansArray.push(responseJson[i]);
-                }
-                return techniciansArray;
-            })
-            .then((technicians) => {
-                this.setState({technicians: technicians});
-            })
-            .catch((error) => {
-                console.log(error);
-    };*/
-
-
+    //Update tickets when technician assigned
     handleAssignChange = (ticket, technician) => {
          var formData = new FormData();
          formData.append('id', ticket.id);
@@ -135,6 +120,7 @@ class HelpdeskTickets extends Component {
          setTimeout(this.getTickets, 1000);
      };
 
+    //Update ticket when ticket priority changed by helpdesk
     handlePriorityChange = (ticket, prOption) => {
         var formData = new FormData();
         formData.append('id', ticket.id);
@@ -159,6 +145,7 @@ class HelpdeskTickets extends Component {
         setTimeout(this.getTickets, 3000);
     };
 
+    //Update ticket when ticket escalation changed by helpdesk
     handleEscalationChange = (ticket, escalation) => {
         var formData = new FormData();
         formData.append('id', ticket.id);

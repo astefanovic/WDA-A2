@@ -9,12 +9,14 @@ import Menu, {MenuItem} from 'material-ui/Menu';
 import Divider from 'material-ui/Divider';
 import Tooltip from 'material-ui/Tooltip';
 
+//Priority Options
 const prOption = [
     "Low",
     "Medium",
     "High",
 ];
 
+//Escalation Options
 const escalation = [
     "1",
     "2",
@@ -29,13 +31,13 @@ class TicketCard extends Component {
             anchorEl: null,
             //Determines if the comments section is extended
             expanded: false,
-            //Assign the tickets
+            //Ticket choice
             tchoiceopen: false,
-
+            //Priority choice
             pchoiceopen: false,
-
+            //Escaltion choice
             echoiceopen: false,
-
+            //Temp Technician name
             techname: "",
         };
     };
